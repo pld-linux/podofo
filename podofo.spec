@@ -19,6 +19,8 @@ BuildRequires:	freetype-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
+BuildRequires:	openssl-devel
+BuildRequires:	texlive-pdftex
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -103,6 +105,9 @@ cd build
         -DPODOFO_BUILD_STATIC:BOOL=TRUE \
         -DINSTALL_LIB_DIR=%{_lib} \
         -DINSTALL_LIBDATA_DIR=%{_libdir} \
+%if "%{_lib}" == "lib64"
+	-DWANT_LIB64=TRUE \
+%endif
         %{?debug:-DCMAKE_BUILD_TYPE="Debug"}
 %{__make}
 cd ..
