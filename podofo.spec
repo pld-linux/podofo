@@ -125,6 +125,9 @@ cd build
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# fix library (libpodofo.so. -> libpodofo.so.0.8.0)
+mv $RPM_BUILD_ROOT%{_libdir}/libpodofo.so{.,.0.8.0}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
