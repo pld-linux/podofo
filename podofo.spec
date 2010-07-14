@@ -5,12 +5,12 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.8.0
+Version:	0.8.1
 Release:	1
 License:	LGPL
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	b73b4f2f3525a2dcd632f5e0054cab63
+Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
+# Source0-md5:	1d5cc8c03e2942266f96a7e8bf09dd0e
 URL:		http://podofo.sourceforge.net/
 BuildRequires:	cmake
 %{?with_apidocs:BuildRequires:	doxygen}
@@ -83,8 +83,8 @@ Pliki nagłówkowe biblioteki PoDoFo.
 %package examples
 Summary:	PoDoFo examples
 Summary(pl.UTF-8):	Przykłady do PoDoFo
-Group:          Development/Tools
-Requires:       %{name} = %{version}-%{release}
+Group:		Development/Tools
+Requires:	%{name} = %{version}-%{release}
 
 %description examples
 PoDoFo examples.
@@ -99,16 +99,16 @@ Programy przykładowe do PoDoFo.
 install -d build
 cd build
 %cmake .. \
-        -DCMAKE_INSTALL_PREFIX="%{_prefix}" \
-        -DCMAKE_VERBOSE_MAKEFILE=ON \
-        -DPODOFO_BUILD_SHARED:BOOL=TRUE \
-        -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-        -DINSTALL_LIB_DIR=%{_lib} \
-        -DINSTALL_LIBDATA_DIR=%{_libdir} \
+	-DCMAKE_INSTALL_PREFIX="%{_prefix}" \
+	-DCMAKE_VERBOSE_MAKEFILE=ON \
+	-DPODOFO_BUILD_SHARED:BOOL=TRUE \
+	-DPODOFO_BUILD_STATIC:BOOL=TRUE \
+	-DINSTALL_LIB_DIR=%{_lib} \
+	-DINSTALL_LIBDATA_DIR=%{_libdir} \
 %if "%{_lib}" == "lib64"
 	-DWANT_LIB64=TRUE \
 %endif
-        %{?debug:-DCMAKE_BUILD_TYPE="Debug"}
+	%{?debug:-DCMAKE_BUILD_TYPE="Debug"}
 %{__make}
 cd ..
 
@@ -124,9 +124,6 @@ cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cd build
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-# fix library (libpodofo.so. -> libpodofo.so.0.8.0)
-mv $RPM_BUILD_ROOT%{_libdir}/libpodofo.so{.,.0.8.0}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
