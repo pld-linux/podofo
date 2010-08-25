@@ -6,7 +6,7 @@ Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
 Version:	0.8.2
-Release:	1
+Release:	2
 License:	LGPL
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
@@ -20,7 +20,11 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	openssl-devel
+%if "%{pld_release}" != "th"
+BuildRequires:	tetex-pdftex
+%else
 BuildRequires:	texlive-pdftex
+%endif
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
