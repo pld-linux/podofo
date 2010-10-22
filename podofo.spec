@@ -5,12 +5,12 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.8.2
-Release:	2
+Version:	0.8.3
+Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	25d79f126a20680d69f95d33068f8599
+# Source0-md5:	2041bbde2c149722ce41598d779956c0
 URL:		http://podofo.sourceforge.net/
 BuildRequires:	cmake
 %{?with_apidocs:BuildRequires:	doxygen}
@@ -20,6 +20,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	openssl-devel
+BuildRequires:	rpmbuild(macros) >= 1.577
 %if "%{pld_release}" != "th"
 BuildRequires:	tetex-pdftex
 %else
@@ -36,6 +37,16 @@ avoid loading large PDF objects into memory until they are required
 and can write large streams immediately to disk, so it is possible to
 manipulate quite large files with it. PoDoFo uses and relies on
 exceptions, so it must be built with them enabled.
+
+%description -l pl.UTF-8
+Biblioteka PoDoFo jest darmową przenośną biblioteką C++ dostarczjącą
+klasy do parsowania plików PDF i modyfikowania ich w pamięci. Zmiany
+mogą być ponownie łatwo zapisane na dysk. PoDoFo jest zaprojektowane w
+sposób, który pozwala na unikanie ładowania dużych plików PDF do
+pamięci, jeżeli nie jest to niezbędne. Pozwala również na zapisywanie
+dużych strumieni natychmiast na dysk, co umożliwia manipulowanie
+całkiem dużymi plikami. PoDoFo używa i zależne jest od wyjątków, więc
+konieczna jest jego budowa z włączoną ich obsługą.
 
 %package devel
 Summary:	Header files for PoDoFo library
@@ -103,16 +114,13 @@ Programy przykładowe do PoDoFo.
 install -d build
 cd build
 %cmake .. \
-	-DCMAKE_INSTALL_PREFIX="%{_prefix}" \
-	-DCMAKE_VERBOSE_MAKEFILE=ON \
 	-DPODOFO_BUILD_SHARED:BOOL=TRUE \
 	-DPODOFO_BUILD_STATIC:BOOL=TRUE \
-	-DINSTALL_LIB_DIR=%{_lib} \
 	-DINSTALL_LIBDATA_DIR=%{_libdir} \
 %if "%{_lib}" == "lib64"
-	-DWANT_LIB64=TRUE \
+	-DWANT_LIB64=TRUE
 %endif
-	%{?debug:-DCMAKE_BUILD_TYPE="Debug"}
+
 %{__make}
 cd ..
 
@@ -157,7 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files progs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/podofo*
 
 %files examples
 %defattr(644,root,root,755)
