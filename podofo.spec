@@ -5,12 +5,12 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.8.3
+Version:	0.8.4
 Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	2041bbde2c149722ce41598d779956c0
+# Source0-md5:	7c366656928cb7919d75bdfdf903d5d5
 URL:		http://podofo.sourceforge.net/
 BuildRequires:	cmake
 %{?with_apidocs:BuildRequires:	doxygen}
