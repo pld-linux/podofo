@@ -5,12 +5,12 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.8.4
+Version:	0.9.0
 Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	7c366656928cb7919d75bdfdf903d5d5
+# Source0-md5:	2a9ac8cbb5e6575dbc00f083ad8996fb
 URL:		http://podofo.sourceforge.net/
 BuildRequires:	cmake
 %{?with_apidocs:BuildRequires:	doxygen}
@@ -20,7 +20,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	openssl-devel
-BuildRequires:	rpmbuild(macros) >= 1.577
+BuildRequires:	rpmbuild(macros) >= 1.600
 %if "%{pld_release}" != "th"
 BuildRequires:	tetex-pdftex
 %else
@@ -166,6 +166,7 @@ rm -rf $RPM_BUILD_ROOT
 %files progs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/podofo*
+%{_mandir}/man1/podofo*.1*
 
 %files examples
 %defattr(644,root,root,755)
