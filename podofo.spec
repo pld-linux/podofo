@@ -12,13 +12,15 @@ Group:		Libraries
 Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
 # Source0-md5:	cec586ab69f92bc88d38b5d4b8eee5a0
 URL:		http://podofo.sourceforge.net/
-BuildRequires:	cmake
+BuildRequires:	cmake >= 2.6
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel
 BuildRequires:	libjpeg-devel
+BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
+BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
 BuildRequires:	rpmbuild(macros) >= 1.600
 %if "%{pld_release}" != "th"
@@ -53,6 +55,7 @@ Summary:	Header files for PoDoFo library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki PodoFo
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libstdc++-devel
 
 %description devel
 Header files for PoDoFo library.
@@ -145,17 +148,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc FAQ.html README.html
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%doc AUTHORS CONTRIBUTIONS.txt ChangeLog FAQ.html README.html TODO
+%attr(755,root,root) %{_libdir}/libpodofo.so.*.*.*
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/lib*.so
+%attr(755,root,root) %{_libdir}/libpodofo.so
 %{_includedir}/podofo
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libpodofo.a
 
 %if %{with apidocs}
 %files apidocs
