@@ -23,11 +23,7 @@ BuildRequires:	libtiff-devel
 BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
 BuildRequires:	rpmbuild(macros) >= 1.600
-%if "%{pld_release}" != "th"
-BuildRequires:	tetex-pdftex
-%else
 BuildRequires:	texlive-pdftex
-%endif
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
