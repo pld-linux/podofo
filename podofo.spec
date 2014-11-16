@@ -5,23 +5,28 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.9.2
+Version:	0.9.3
 Release:	1
-License:	LGPL
+License:	LGPL with OpenSSL exception
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	41966c57fa4266ac5cef80bfade0c8e7
+# Source0-md5:	268ca111826757ca7e3f5c4be3547e7a
+Patch0:		%{name}-build.patch
 URL:		http://podofo.sourceforge.net/
+BuildRequires:	boost-devel
 BuildRequires:	cmake >= 2.6
+BuildRequires:	cppunit-devel
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel
+BuildRequires:	libidn-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.600
 BuildRequires:	texlive-pdftex
 BuildRequires:	zlib-devel
@@ -108,6 +113,7 @@ Programy przykładowe do PoDoFo.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 install -d build
@@ -144,7 +150,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CONTRIBUTIONS.txt ChangeLog FAQ.html README.html TODO
+%doc AUTHORS CONTRIBUTIONS.txt COPYING.exception ChangeLog FAQ.html README.html TODO
 %attr(755,root,root) %{_libdir}/libpodofo.so.*.*.*
 
 %files devel

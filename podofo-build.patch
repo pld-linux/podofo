@@ -1,0 +1,11 @@
+--- podofo-0.9.3/test/unit/EncryptTest.h.orig	2012-12-12 23:55:46.000000000 +0100
++++ podofo-0.9.3/test/unit/EncryptTest.h	2014-11-16 08:47:36.047161648 +0100
+@@ -83,7 +83,7 @@
+ 
+  private:
+   char* m_pEncBuffer;
+-  long  m_lLen;
++  PoDoFo::pdf_long m_lLen;
+   int   m_protection;
+   
+ };
