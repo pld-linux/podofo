@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
-#
+
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
@@ -13,7 +13,6 @@ Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
 # Source0-md5:	268ca111826757ca7e3f5c4be3547e7a
 Patch0:		%{name}-build.patch
 URL:		http://podofo.sourceforge.net/
-BuildRequires:	boost-devel
 BuildRequires:	cmake >= 2.6
 BuildRequires:	cppunit-devel
 %{?with_apidocs:BuildRequires:	doxygen}
@@ -26,7 +25,6 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
-BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.600
 BuildRequires:	texlive-pdftex
 BuildRequires:	zlib-devel
@@ -80,6 +78,9 @@ Statyczna biblioteka PoDoFo.
 Summary:	PoDoFo API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki PoDoFo
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 API and internal documentation for PoDoFo library.
