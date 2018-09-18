@@ -5,14 +5,12 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.9.3
-Release:	3
+Version:	0.9.6
+Release:	1
 License:	LGPL with OpenSSL exception
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	268ca111826757ca7e3f5c4be3547e7a
-Patch0:		%{name}-build.patch
-Patch1:		libdir.patch
+# Source0-md5:	46336fc4c4ce4be814bb5fbb4d918334
 URL:		http://podofo.sourceforge.net/
 BuildRequires:	cmake >= 2.6
 BuildRequires:	cppunit-devel
@@ -115,8 +113,6 @@ Programy przykładowe do PoDoFo.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 install -d build
@@ -160,6 +156,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libpodofo.so
 %{_includedir}/podofo
+%{_pkgconfigdir}/libpodofo-0.pc
 
 %files static
 %defattr(644,root,root,755)
