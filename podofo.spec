@@ -13,6 +13,8 @@ Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
 # Source0-md5:	46336fc4c4ce4be814bb5fbb4d918334
 Patch0:		fix-broken-test.patch
 URL:		http://podofo.sourceforge.net/
+# for examples only, with -DWANT_BOOST=ON
+#BuildRequires:	boost-devel
 BuildRequires:	cmake >= 2.6
 BuildRequires:	cppunit-devel
 %{?with_apidocs:BuildRequires:	doxygen}
@@ -23,6 +25,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
+BuildRequires:	libunistring-devel
 BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
 BuildRequires:	rpmbuild(macros) >= 1.600
