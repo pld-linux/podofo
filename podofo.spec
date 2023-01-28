@@ -5,14 +5,13 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.9.6
-Release:	3
+Version:	0.9.8
+Release:	1
 License:	LGPL with OpenSSL exception
 Group:		Libraries
-Source0:	http://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	46336fc4c4ce4be814bb5fbb4d918334
-Patch0:		fix-broken-test.patch
-URL:		http://podofo.sourceforge.net/
+Source0:	https://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
+# Source0-md5:	f6d3d5f917c7150c44fc6a15848442dd
+URL:		https://podofo.sourceforge.net/
 # for examples only, with -DWANT_BOOST=ON
 #BuildRequires:	boost-devel
 BuildRequires:	cmake >= 2.6
@@ -28,7 +27,7 @@ BuildRequires:	libtiff-devel
 BuildRequires:	libunistring-devel
 BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
-BuildRequires:	rpmbuild(macros) >= 1.600
+BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	texlive-pdftex
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -115,7 +114,6 @@ Programy przykładowe do PoDoFo.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 install -d build
@@ -138,10 +136,10 @@ doxygen
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+
 cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
-cd build
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
@@ -159,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libpodofo.so
 %{_includedir}/podofo
-%{_pkgconfigdir}/libpodofo-0.pc
+%{_pkgconfigdir}/libpodofo.pc
 
 %files static
 %defattr(644,root,root,755)
