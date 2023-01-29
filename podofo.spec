@@ -11,6 +11,7 @@ License:	LGPL with OpenSSL exception
 Group:		Libraries
 Source0:	https://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
 # Source0-md5:	f6d3d5f917c7150c44fc6a15848442dd
+Patch0:		%{name}-cppunit.patch
 URL:		https://podofo.sourceforge.net/
 # for examples only, with -DWANT_BOOST=ON
 #BuildRequires:	boost-devel
@@ -114,6 +115,7 @@ Programy przykładowe do PoDoFo.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 install -d build
