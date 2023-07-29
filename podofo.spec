@@ -5,14 +5,13 @@
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.9.8
+Version:	0.10.1
 Release:	1
-License:	LGPL with OpenSSL exception
+License:	LGPL
 Group:		Libraries
-Source0:	https://downloads.sourceforge.net/podofo/%{name}-%{version}.tar.gz
-# Source0-md5:	f6d3d5f917c7150c44fc6a15848442dd
-Patch0:		%{name}-cppunit.patch
-URL:		https://podofo.sourceforge.net/
+Source0:	https://github.com/podofo/podofo/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	a609bd974b8907d7f23f4b2eb8e22bc9
+URL:		https://github.com/podofo/podofo
 # for examples only, with -DWANT_BOOST=ON
 #BuildRequires:	boost-devel
 BuildRequires:	cmake >= 2.6
@@ -89,18 +88,6 @@ API and internal documentation for PoDoFo library.
 %description apidocs -l pl.UTF-8
 Dokumentacja API biblioteki PoDoFo.
 
-%package progs
-Summary:	PoDoFo tools
-Summary(pl.UTF-8):	Programy narzędziowe PodoFo
-Group:		Applications
-Requires:	%{name} = %{version}-%{release}
-
-%description progs
-Header files for PoDoFo library.
-
-%description progs -l pl.UTF-8
-Pliki nagłówkowe biblioteki PoDoFo.
-
 %package examples
 Summary:	PoDoFo examples
 Summary(pl.UTF-8):	Przykłady do PoDoFo
@@ -115,14 +102,11 @@ Programy przykładowe do PoDoFo.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 install -d build
 cd build
 %cmake .. \
-	-DPODOFO_BUILD_SHARED:BOOL=TRUE \
-	-DPODOFO_BUILD_STATIC:BOOL=TRUE \
 	-DINSTALL_LIBDATA_DIR=%{_libdir} \
 %if "%{_lib}" == "lib64"
 	-DWANT_LIB64=TRUE
@@ -137,12 +121,14 @@ doxygen
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+install -d $RPM_BUILD_ROOT{%{_examplesdir}/%{name}-%{version},%{_libdir}/cmake/%{name}}
 
 cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/*.cmake $RPM_BUILD_ROOT%{_libdir}/cmake/%{name}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -152,29 +138,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CONTRIBUTIONS.txt COPYING.exception ChangeLog FAQ.html README.html TODO
+%doc AUTHORS.md CHANGELOG.md CODING-STYLE.md README.md TODO.md
 %attr(755,root,root) %{_libdir}/libpodofo.so.*.*.*
+%ghost %attr(755,root,root) %{_libdir}/libpodofo.so.2
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libpodofo.so
 %{_includedir}/podofo
 %{_pkgconfigdir}/libpodofo.pc
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libpodofo.a
+%{_libdir}/cmake/%{name}
 
 %if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
 %doc doc/html
 %endif
-
-%files progs
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/podofo*
-%{_mandir}/man1/podofo*.1*
 
 %files examples
 %defattr(644,root,root,755)
