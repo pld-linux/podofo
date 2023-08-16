@@ -7,14 +7,14 @@ Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
 Version:	0.10.1
 Release:	1
-License:	LGPL
+License:	LGPL v2+
 Group:		Libraries
 Source0:	https://github.com/podofo/podofo/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	a609bd974b8907d7f23f4b2eb8e22bc9
 URL:		https://github.com/podofo/podofo
 # for examples only, with -DWANT_BOOST=ON
 #BuildRequires:	boost-devel
-BuildRequires:	cmake >= 2.6
+BuildRequires:	cmake >= 3.16
 BuildRequires:	cppunit-devel
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	fontconfig-devel
@@ -22,11 +22,12 @@ BuildRequires:	freetype-devel
 BuildRequires:	libidn-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
-BuildRequires:	libstdc++-devel
+BuildRequires:	libstdc++-devel >= 6:8.1
 BuildRequires:	libtiff-devel
 BuildRequires:	libunistring-devel
 BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	texlive-pdftex
 BuildRequires:	zlib-devel
@@ -56,25 +57,14 @@ Summary:	Header files for PoDoFo library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki PodoFo
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libstdc++-devel
+Requires:	libstdc++-devel >= 6:8.1
+Obsoletes:	podofo-static < 0.10
 
 %description devel
 Header files for PoDoFo library.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki PoDoFo.
-
-%package static
-Summary:	Static PoDoFo library
-Summary(pl.UTF-8):	Statyczna biblioteka FOO
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static PoDoFo library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka PoDoFo.
 
 %package apidocs
 Summary:	PoDoFo API documentation
@@ -87,6 +77,18 @@ API and internal documentation for PoDoFo library.
 
 %description apidocs -l pl.UTF-8
 Dokumentacja API biblioteki PoDoFo.
+
+%package progs
+Summary:	PoDoFo tools
+Summary(pl.UTF-8):	Programy narzędziowe PoDoFo
+Group:		Applications/Publishing
+Requires:	%{name} = %{version}-%{release}
+
+%description progs
+PoDoFo tools (currently not supported by upstream).
+
+%description progs -l pl.UTF-8
+Programy narzędziowe PoDoFo (obecnie bez wsparcia ze strony projektu).
 
 %package examples
 Summary:	PoDoFo examples
@@ -104,16 +106,11 @@ Programy przykładowe do PoDoFo.
 %setup -q
 
 %build
-install -d build
-cd build
-%cmake .. \
+%cmake -B build \
 	-DINSTALL_LIBDATA_DIR=%{_libdir} \
-%if "%{_lib}" == "lib64"
-	-DWANT_LIB64=TRUE
-%endif
+	-DPODOFO_BUILD_TOOLS=ON
 
-%{__make}
-cd ..
+%{__make} -C build
 
 %if %{with apidocs}
 doxygen
@@ -121,14 +118,16 @@ doxygen
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_examplesdir}/%{name}-%{version},%{_libdir}/cmake/%{name}}
+install -d $RPM_BUILD_ROOT{%{_examplesdir}/%{name}-%{version},%{_libdir}/cmake/%{name},%{_mandir}/man1}
 
 cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/*.cmake $RPM_BUILD_ROOT%{_libdir}/cmake/%{name}/
+cp -p man/*.1 $RPM_BUILD_ROOT%{_mandir}/man1
+
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/*.cmake $RPM_BUILD_ROOT%{_libdir}/cmake/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -154,6 +153,45 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc doc/html
 %endif
+
+%files progs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/podofobox
+%attr(755,root,root) %{_bindir}/podofocolor
+%attr(755,root,root) %{_bindir}/podofocountpages
+%attr(755,root,root) %{_bindir}/podofocrop
+%attr(755,root,root) %{_bindir}/podofoencrypt
+%attr(755,root,root) %{_bindir}/podofogc
+%attr(755,root,root) %{_bindir}/podofoimg2pdf
+%attr(755,root,root) %{_bindir}/podofoimgextract
+%attr(755,root,root) %{_bindir}/podofoimpose
+%attr(755,root,root) %{_bindir}/podofoincrementalupdates
+%attr(755,root,root) %{_bindir}/podofomerge
+%attr(755,root,root) %{_bindir}/podofonooc
+%attr(755,root,root) %{_bindir}/podofopages
+%attr(755,root,root) %{_bindir}/podofopdfinfo
+%attr(755,root,root) %{_bindir}/podofosign
+%attr(755,root,root) %{_bindir}/podofotxt2pdf
+%attr(755,root,root) %{_bindir}/podofotxtextract
+%attr(755,root,root) %{_bindir}/podofouncompress
+%attr(755,root,root) %{_bindir}/podofoxmp
+%{_mandir}/man1/podofobox.1*
+%{_mandir}/man1/podofocolor.1*
+%{_mandir}/man1/podofocountpages.1*
+%{_mandir}/man1/podofocrop.1*
+%{_mandir}/man1/podofoencrypt.1*
+%{_mandir}/man1/podofogc.1*
+%{_mandir}/man1/podofoimg2pdf.1*
+%{_mandir}/man1/podofoimgextract.1*
+%{_mandir}/man1/podofoimpose.1*
+%{_mandir}/man1/podofoincrementalupdates.1*
+%{_mandir}/man1/podofomerge.1*
+%{_mandir}/man1/podofopages.1*
+%{_mandir}/man1/podofopdfinfo.1*
+%{_mandir}/man1/podofotxt2pdf.1*
+%{_mandir}/man1/podofotxtextract.1*
+%{_mandir}/man1/podofouncompress.1*
+%{_mandir}/man1/podofoxmp.1*
 
 %files examples
 %defattr(644,root,root,755)
