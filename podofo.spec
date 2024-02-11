@@ -1,16 +1,17 @@
 #
 # Conditional build:
-%bcond_without	apidocs		# do not build and package API docs
+%bcond_without	apidocs		# doxygen based API documentation
 
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.10.1
+Version:	0.10.3
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
+#Source0Download: https://github.com/podofo/podofo/releases
 Source0:	https://github.com/podofo/podofo/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	a609bd974b8907d7f23f4b2eb8e22bc9
+# Source0-md5:	41580f583e3210563cb65478ee8697c0
 URL:		https://github.com/podofo/podofo
 # for examples only, with -DWANT_BOOST=ON
 #BuildRequires:	boost-devel
