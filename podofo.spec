@@ -6,7 +6,7 @@ Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
 Version:	0.10.3
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/podofo/podofo/releases
