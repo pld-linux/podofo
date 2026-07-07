@@ -1,36 +1,47 @@
+# TODO:
+# - system tcpspan (-DPODOFO_DEVENDOR_TCBSPAN), date (-DPODOFO_DEVENDOR_DATE)
 #
 # Conditional build:
-%bcond_without	apidocs		# doxygen based API documentation
+%bcond_without	apidocs			# doxygen based API documentation
+%bcond_with	lcms			# ICC profiles support via lcms [undocumented, cmake option missing]
+%bcond_without	system_fastfloat	# system fast_floatlibrary
+%bcond_without	system_fmt		# system libfmt library
+%bcond_without	system_utf8cpp		# system utf8cpp library
+%bcond_with	system_utf8proc		# system utf8proc library [requires utf8proc with cmake configs]
 
 Summary:	Library to work with PDF files
 Summary(pl.UTF-8):	Biblioteka do obsługi PDF-ów
 Name:		podofo
-Version:	0.10.3
-Release:	4
-License:	LGPL v2+
+Version:	1.1.1
+Release:	1
+License:	LGPL v2+ or MPL v2.0 (library), GPL v2+ (tools)
 Group:		Libraries
 #Source0Download: https://github.com/podofo/podofo/releases
 Source0:	https://github.com/podofo/podofo/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	41580f583e3210563cb65478ee8697c0
+# Source0-md5:	11c4478ed0c2f369fa51463d2b42d3c8
 URL:		https://github.com/podofo/podofo
-# for examples only, with -DWANT_BOOST=ON
-#BuildRequires:	boost-devel
-BuildRequires:	cmake >= 3.16
+BuildRequires:	cmake >= 3.23
 BuildRequires:	cppunit-devel
 %{?with_apidocs:BuildRequires:	doxygen}
+%{?with_system_fastfloat:BuildRequires:	fast_float-devel}
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel
+%{?with_lcms:BuildRequires:	lcms2-devel >= 2}
+%{?with_system_fmt:BuildRequires:	libfmt-devel}
 BuildRequires:	libidn-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
-BuildRequires:	libstdc++-devel >= 6:8.1
+BuildRequires:	libstdc++-devel >= 6:9
 BuildRequires:	libtiff-devel
 BuildRequires:	libunistring-devel
+BuildRequires:	libxml2-devel >= 1:2.15.0
 BuildRequires:	lua51-devel
 BuildRequires:	openssl-devel
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	texlive-pdftex
+%{?with_system_utf8cpp:BuildRequires:	utf8cpp-devel}
+%{?with_system_utf8proc:BuildRequires:	utf8proc-devel}
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -56,9 +67,15 @@ konieczna jest jego budowa z włączoną ich obsługą.
 %package devel
 Summary:	Header files for PoDoFo library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki PodoFo
+License:	LGPL v2.0+ or MPL v2.0
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libstdc++-devel >= 6:8.1
+%{?with_system_fastfloat:Requires:	fast_float-devel}
+%{?with_lcms:Requires:	lcms2-devel >= 2}
+%{?with_system_fmt:Requires:	libfmt-devel}
+Requires:	libstdc++-devel >= 6:9
+%{?with_system_utf8cpp:Requires:	utf8cpp-devel}
+%{?with_system_utf8proc:Requires:	utf8proc-devel}
 Obsoletes:	podofo-static < 0.10
 
 %description devel
@@ -82,6 +99,7 @@ Dokumentacja API biblioteki PoDoFo.
 %package progs
 Summary:	PoDoFo tools
 Summary(pl.UTF-8):	Programy narzędziowe PoDoFo
+License:	GPL v2+
 Group:		Applications/Publishing
 Requires:	%{name} = %{version}-%{release}
 
@@ -94,6 +112,7 @@ Programy narzędziowe PoDoFo (obecnie bez wsparcia ze strony projektu).
 %package examples
 Summary:	PoDoFo examples
 Summary(pl.UTF-8):	Przykłady do PoDoFo
+License:	MIT
 Group:		Development/Tools
 Requires:	%{name} = %{version}-%{release}
 
@@ -109,11 +128,17 @@ Programy przykładowe do PoDoFo.
 %build
 %cmake -B build \
 	-DINSTALL_LIBDATA_DIR=%{_libdir} \
-	-DPODOFO_BUILD_TOOLS=ON
+	-DPODOFO_BUILD_UNSUPPORTED_TOOLS=ON \
+	%{?with_system_fastfloat:-DPODOFO_DEVENDOR_FASTFLOAT=ON} \
+	%{?with_system_fmt:-DPODOFO_DEVENDOR_FMT=ON} \
+	%{?with_system_utf8cpp:-DPODOFO_DEVENDOR_UTF8CPP=ON} \
+	%{?with_system_utf8proc:-DPODOFO_DEVENDOR_UTF8PROC=ON} \
+	%{?with_lcms:-DPODOFO_WITH_LCMS2=ON}
 
 %{__make} -C build
 
 %if %{with apidocs}
+cd build
 doxygen
 %endif
 
@@ -128,8 +153,6 @@ cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 cp -p man/*.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
-%{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/*.cmake $RPM_BUILD_ROOT%{_libdir}/cmake/%{name}
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -138,21 +161,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS.md CHANGELOG.md CODING-STYLE.md README.md TODO.md
-%attr(755,root,root) %{_libdir}/libpodofo.so.*.*.*
-%ghost %attr(755,root,root) %{_libdir}/libpodofo.so.2
+%doc AUTHORS.md CHANGELOG.md NOTICE README.md SECURITY.md TODO.md
+%{_libdir}/libpodofo.so.*.*.*
+%ghost %{_libdir}/libpodofo.so.4
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libpodofo.so
+%doc API-MIGRATION.md
+%{_libdir}/libpodofo.so
 %{_includedir}/podofo
 %{_pkgconfigdir}/libpodofo.pc
-%{_libdir}/cmake/%{name}
+%{_libdir}/cmake/podofo
 
 %if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
-%doc doc/html
+%doc build/doxygen/documentation/*
 %endif
 
 %files progs
